@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+	Edit Account - {{ block.super }}
+{% endblock %}
+
+{% block styles %}
+	{{ block.super }}
+	<link rel="stylesheet" href="{% static 'css/boards/boards.css' %}">
+{% endblock %}
+
+{% block content %}
+
+	<div class="row mb-2">
+		<div class="col-12">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb bg-light mb-0">
+					<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+					<li class="breadcrumb-item"><a href="{% url 'user_info' user.id %}">My Account</a></li>
+					<li class="breadcrumb-item active" aria-current="page">Edit</li>
+				</ol>
+			</nav>
+		</div>
+	</div>
+
+	<h1 class="display-4 bree-serif font-weight-bold mb-4">Edit Account</h1>
+
+	<form method="POST" novalidate>
+		{% csrf_token %}
+		{% include 'includes/form.html' %}
+		<div class="mt-4 mb-2 text-center">
+			<button type="submit" class="btn btn-success bree-serif">Save Changes</button>
+			<a href="{% url 'user_info' user.id %}" class="btn btn-outline-secondary bree-serif" role="button">Cancel</a>
+		</div>
+	</form>
+
+{% endblock %}

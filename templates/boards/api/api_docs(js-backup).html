@@ -1,0 +1,445 @@
+{% extends 'base.html' %}
+
+
+{% load static %}
+
+
+{% block title %}
+	API Documentation - {{ block.super }}
+{% endblock %}
+
+{% block styles %}
+	{{ block.super }}
+	<link rel="stylesheet" href="{% static 'css/boards/boards.css' %}">
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+{% endblock %}
+
+{% block whiteboard %}
+
+<div class="row">
+
+	<div class="col-lg-1">
+	</div>
+
+	<div class="col-lg-10">
+
+		<div class="card rounded-0 r-bottom mb-4 heading shadow">
+			<div class="card-body">
+				{% if messages %}
+
+					{% for message in messages %}
+						<div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %} alert-dismissible">
+							<button type="button" class="close" data-dismiss="alert">&times;</button>
+							{{ message|safe }}
+						</div>
+					{% endfor %}
+
+				{% endif %}
+
+				{% block content %}
+					<div class="row">
+						<div class="col-12">
+							<nav aria-label="breadcrumb">
+								<ol class="breadcrumb bg-light mb-0">
+									<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+									<li class="breadcrumb-item active" aria-current="page">API Documentation</li>
+								</ol>
+							</nav>
+						</div>
+					</div>
+			</div>
+		</div>
+
+		<div class="row" id="content">
+
+			<div class="col-lg-3">
+				<div class="card shadow" id="content">
+					<div class="card-body">
+						<ul class="nav flex-column" id="side-nav">
+							<li class="nav-item mb-1">
+								<a class="nav-link btn btn-light active" href="{% url 'boards-api:docs' %}" data-target="general" style="color: #008FFF;">General</a>
+							</li>
+							<li class="nav-item mb-1">
+								<a class="nav-link btn btn-light" href="{% url 'boards-api:docs_boards' %}" data-target="boards" style="color: #008FFF;">Boards</a>
+							</li>
+							<li class="nav-item mb-1">
+								<a class="nav-link btn btn-light" href="{% url 'boards-api:docs_topics' %}" data-target="topics" style="color: #008FFF;">Topics</a>
+							</li>
+							<li class="nav-item mb-1">
+								<a class="nav-link btn btn-light" href="{% url 'boards-api:docs_posts' %}" data-target="posts" style="color: #008FFF;">Posts</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-lg-9">
+				<div class="card shadow">
+					<div class="card-body" id="docs">
+
+						<div class="transparent" id="general">
+							<h3 class="display-4 font-weight-bold">General</h3>
+							<hr>
+							<p>
+								By default you'll see user interface in API. To receive json format add <code>format=json</code> parameter. Json format supported only.
+							</p>
+
+							<div class="mb-4" id="pagination">
+								<h5>Pagination</h5>
+								<p>
+									If you see structure as below, you deal with pagination.
+								</p>
+<pre><code class="json">{
+    "count": 106,
+    "next": "http://127.0.0.1:8000/api/boards/1/topics/?page=2",
+    "previous": null,
+    "results": [
+        ...
+    ]
+}
+</code></pre>
+								<p>
+									Data stored in attribute <code>"results"</code>. 
+									You can provide two <code>GET</code> parameters to setup pagination:<br>
+									<ul>
+										<li> <code>page_size</code> </li>
+										<li> <code>page</code> </li>
+									</ul>
+									By default <code>page_size</code> equals to 20 <small class="text-muted">(in list views - 100)</small>. Max <code>page_size</code> restricted to 1000.
+									You can change the page number through setting needed number to <code>page</code> parameter.
+								</p>
+
+							</div>
+						</div>
+
+						<div class="transparent" id="boards" style="display:none;">
+							<h3 class="display-4 font-weight-bold">Boards</h3>
+							<hr>
+
+							<div class="mb-4">
+								<h5>Request all boards</h5>
+								<p>
+									<code><a href="{% url 'boards-api:boards_list' %}" target="_blank">/api/boards/</a></code><br>
+									You'll get a list of serialized board objects with following attributes:
+								</p>
+
+<pre><code class="json">{
+    "id": 1,
+    "name": "Django",
+    "description": "Django discussion board",
+    "posts_count": 114,
+    "topics_count": 106,
+    "last_post_datetime": "06.05.2018, 11:10",
+    "topics_url": "http://127.0.0.1:8000/api/boards/1/topics/"
+}
+</code></pre>
+							</div>
+
+							<hr>
+
+							<div class="mb-4">
+								<h5>Request specific board by given <code><mark>id</mark></code></h5>
+								<p>
+									<code><a href="{% url 'boards-api:board_detail' 1 %}" target="_blank">/api/boards/<mark>id</mark>/</a></code><br>
+									You'll get only one board object instead list. Structure the same.
+								</p>
+							</div>
+
+							<hr>
+
+							<div class="mb-4">
+								<h5>Request board topics <small class="text-muted">(topics that belong to the specific board)</small>:</h5>
+								<p>
+									<code><a href="{% url 'boards-api:board_topics' 1 %}" target="_blank">/api/boards/<mark>id</mark>/topics/</a></code><br>
+									You'll get <a href="" class="paginated">paginated</a> data with following structure:
+								</p>
+
+<pre><code class="json">{
+    "count": 106,
+    "next": "http://127.0.0.1:8000/api/boards/1/topics/?page=2",
+    "previous": null,
+    "results": [
+        {
+            "id": 106,
+            "title": "Testing messages framework",
+            "starter": {
+                "id": 2,
+                "username": "Test",
+                "detail_url": "http://127.0.0.1:8000/api/users/2/"
+            },
+            "views": 3,
+            "last_updated": "06.05.2018, 11:10",
+            "posts_url": "http://127.0.0.1:8000/api/topics/106/posts/",
+            "reply_topic": "http://127.0.0.1:8000/api/topics/106/reply/"
+        },
+        ...
+    ]
+}
+</code></pre>
+							</div>
+
+						</div>
+
+						<div class="transparent" id="topics" style="display:none;">
+							<h3 class="display-4 font-weight-bold">Topics</h3>
+							<hr>
+
+							<div class="mb-4">
+								<h5>List all topics</h5>
+								<p>
+									<code><a href="{% url 'boards-api:topics_list' %}" target="_blank">/api/topics/</a></code><br>
+									You'll get <a href="" class="paginated">paginated</a> data with following structure:
+								</p>
+<pre><code class="json">{
+    "count": 149,
+    "next": "http://127.0.0.1:8000/api/topics/?page=2",
+    "previous": null,
+    "results": [
+        {
+            "id": 159,
+            "title": "Test",
+            "starter": {
+                "id": 1,
+                "username": "automan",
+                "detail_url": "http://127.0.0.1:8000/api/users/1/"
+            },
+            "views": 1,
+            "last_updated": "11.06.2018, 09:01",
+            "posts_url": "http://127.0.0.1:8000/api/topics/159/posts/",
+            "reply_topic": "http://127.0.0.1:8000/api/topics/159/reply/",
+            "board": {
+                "id": 3,
+                "name": "Smoking room",
+                "description": "Discuss anything",
+                "posts_count": 9,
+                "topics_count": 8,
+                "last_post_datetime": "11.06.2018, 09:27",
+                "topics_url": "http://127.0.0.1:8000/api/boards/3/topics/"
+            }
+        },
+        ...
+    ]
+}
+</code></pre>
+
+							</div>
+
+							<hr>
+
+							<div class="mb-4">
+								<h5>Get a specific topic by providing <code><mark>id</mark></code></h5>
+								<p>
+									<code><a href="{% url 'boards-api:topic_detail' 1 %}" target="_blank">/api/topics/<mark>id</mark>/</a></code><br>
+									You'll get <a href="" class="paginated">paginated</a> data with following structure:
+<pre><code class="json">{
+    "count": 149,
+    "next": "http://127.0.0.1:8000/api/topics/?page=2",
+    "previous": null,
+    "results": [
+        {
+            "id": 159,
+            "title": "Test",
+            "starter": {
+                "id": 1,
+                "username": "automan",
+                "detail_url": "http://127.0.0.1:8000/api/users/1/"
+            },
+            "views": 1,
+            "last_updated": "11.06.2018, 09:01",
+            "posts_url": "http://127.0.0.1:8000/api/topics/159/posts/",
+            "reply_topic": "http://127.0.0.1:8000/api/topics/159/reply/",
+            "board": {
+                "id": 3,
+                "name": "Smoking room",
+                "description": "Discuss anything",
+                "posts_count": 9,
+                "topics_count": 8,
+                "last_post_datetime": "11.06.2018, 09:27",
+                "topics_url": "http://127.0.0.1:8000/api/boards/3/topics/"
+            }
+        },
+        ...
+    ]
+}
+</code></pre>
+								</p>
+							</div>
+
+							<hr>
+
+							<div class="mb-4">
+								<h5>Get topic posts <small class="text-muted">(Posts inside that topic)</small>:</h5>
+								<p>
+									<code><a href="{% url 'boards-api:topic_posts' 1 %}" target="_blank">/api/topics/<mark>id</mark>/posts/</a></code><br>
+									You'll get a <a href="" class="paginated">paginated</a> list of topic posts, with following structure:
+<pre><code class="json">{
+    "count": 4,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 3,
+            "html_message": "&#60;p&#62;Test&#60;/p&#62;",
+            "markdown_message": "Test",
+            "created_by": {
+                "id": 1,
+                "username": "automan",
+                "detail_url": "http://127.0.0.1:8000/api/users/1/"
+            },
+            "created_at": "09.03.2018, 11:43",
+            "edit_post_url": "http://127.0.0.1:8000/api/posts/3/edit/"
+        },
+        ...
+    ]
+}
+</code></pre>
+								</p>
+							</div>
+
+							<hr>
+
+							<div class="mb-4">
+								<h5>Make a reply for topic <small class="text-muted">(requires authentication)</small>:</h5>
+								<p>
+									<code><a href="{% url 'boards-api:topic_reply' 1 %}" target="_blank">/api/topics/<mark>id</mark>/reply/</a></code><br>
+									Only <code>POST</code> method allowed. To reply a topic you need to send data with attribute <code>"message"</code> inside. In message text you can use <a href="https://simplemde.com/" target="_blank">markdown rules</a>. If everything right you'll receive created post with following structure:
+<pre><code class="json">{
+    "id": 166,
+    "html_message": "&#60;p&#62;What's structure of returned object?&#60;/p&#62;",
+    "markdown_message": "What's structure of returned object?",
+    "created_by": {
+        "id": 1,
+        "username": "automan",
+        "detail_url": "http://127.0.0.1:8000/api/users/1/"
+    },
+    "created_at": "13.06.2018, 11:39",
+    "edit_post_url": "http://127.0.0.1:8000/api/posts/166/edit/",
+    "topic": {
+        "id": 3,
+        "title": "What if I enter very long topic subject? Ha?",
+        "starter": {
+            "id": 1,
+            "username": "automan",
+            "detail_url": "http://127.0.0.1:8000/api/users/1/"
+        },
+        "views": 19,
+        "last_updated": "09.03.2018, 11:43",
+        "posts_url": "http://127.0.0.1:8000/api/topics/3/posts/",
+        "reply_topic": "http://127.0.0.1:8000/api/topics/3/reply/"
+    }
+}
+</code></pre>
+								</p>
+							</div>
+
+						</div>
+
+						<div class="transparent" id="posts" style="display:none;">
+							<h3 class="display-4 font-weight-bold">Posts</h3>
+							<hr>
+
+							<div class="mb-4">
+								<h5>List all posts</h5>
+								<p>
+									<code><a href="{% url 'boards-api:posts_list' %}" target="_blank">/api/posts/</a></code><br>
+									You'll get <a href="" class="paginated">paginated</a> data with following structure:
+								</p>
+<pre><code class="json">{
+    "count": 160,
+    "next": "http://127.0.0.1:8000/api/posts/?page=2",
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "html_message": "&#60;p&#62;Does field&#60;/p&#62; &#60;code&#62;html_message&#60;/code&#62; changes according to the &#60;code&#62;markdown_message&#60;/code&#62;?&#60;/p&#62;",
+            "markdown_message": "Does field `html_message` changes according to the `markdown_message`?",
+            "created_by": {
+                "id": 1,
+                "username": "automan",
+                "detail_url": "http://127.0.0.1:8000/api/users/1/"
+            },
+            "created_at": "09.03.2018, 08:38",
+            "edit_post_url": "http://127.0.0.1:8000/api/posts/1/edit/",
+            "topic": {
+                "id": 1,
+                "title": "subject",
+                "starter": {
+                    "id": 1,
+                    "username": "automan",
+                    "detail_url": "http://127.0.0.1:8000/api/users/1/"
+                },
+                "views": 0,
+                "last_updated": "09.03.2018, 08:38",
+                "posts_url": "http://127.0.0.1:8000/api/topics/1/posts/",
+                "reply_topic": "http://127.0.0.1:8000/api/topics/1/reply/"
+            }
+        },
+        ...
+    ]
+}
+</code></pre>
+
+							</div>
+
+							<hr>
+
+							<div class="mb-4">
+								<h5>Get a specific post by providing <code><mark>id</mark></code></h5>
+								<p>
+									<code><a href="{% url 'boards-api:post_detail' 1 %}" target="_blank">/api/posts/<mark>id</mark>/</a></code><br>
+									You'll get data with structure as in list above.
+								</p>
+							</div>
+
+							<hr>
+
+							<div class="mb-4">
+								<h5>Edit post by given <code><mark>id</mark></code></h5>
+								<p>
+									<code><a href="{% url 'boards-api:post_edit' 1 %}" target="_blank">/api/posts/<mark>id</mark>/edit/</a></code><br>
+									You have to be owner of post to be able to edit it.
+									By sending <code>GET</code> request you'll receive data in structure as mentioned above.
+									To create a post you need to send data with attribute <code>"message"</code> inside. In message text you can use <a href="https://simplemde.com/" target="_blank">markdown rules</a>. If everything right you'll receive created post.
+								</p>
+							</div>
+
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+
+				{% endblock %}
+	</div>
+
+	<div class="col-lg-1">
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script>
+$('#side-nav .btn').click(function() {
+	$('#side-nav .btn').each(function() {
+		$(this).removeClass('active')
+	})
+
+	$(this).addClass('active')
+
+	$('#docs .transparent').hide();
+	var target = '#' + $(this).data('target');
+	$(target).show();
+})
+
+$('.paginated').click(function() {
+	window.location = $(this).href + '#pagination'
+})
+</script>
+{% endblock %}

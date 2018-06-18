@@ -1,0 +1,59 @@
+<div class="card shadow mb-4" id="sidebar-nav">
+	<div class="card-body">
+		<nav>
+			<ul class="nav flex-column" id="side-nav">
+				<li class="nav-item mb-1">
+					<a class="nav-link btn btn-light" href="{% url 'boards-api:docs' %}" data-target="general" style="color: #008FFF;">General</a>
+
+					<small class="text-muted">
+						<ul>
+							<li><a href="{% url 'boards-api:docs' %}#pagination" class="light-up">Pagination</a></li>
+							<li><a href="{% url 'boards-api:docs' %}#search-ordering" class="light-up">Search & Ordering</a></li>
+						</ul>
+					</small>
+
+				</li>
+				<li class="nav-item">
+					<hr>
+					<a class="nav-link btn btn-light" href="{% url 'boards-api:docs_boards' %}" data-target="boards" style="color: #008FFF;">Boards</a>
+
+					<small class="text-muted">
+						<ul>
+							<li><a href="{% url 'boards-api:docs_boards' %}#request-all-boards" class="light-up">Request all boards</a></li>
+							<li><a href="{% url 'boards-api:docs_boards' %}#request-specific-board" class="light-up">Request specific board</a></li>
+							<li><a href="{% url 'boards-api:docs_boards' %}#request-board-topics" class="light-up">Request board topics</a></li>
+						</ul>
+					</small>
+
+				</li>
+				<li class="nav-item">
+					<hr>
+					<a class="nav-link btn btn-light" href="{% url 'boards-api:docs_topics' %}" data-target="topics" style="color: #008FFF;">Topics</a>
+
+					<small class="text-muted">
+						<ul>
+							<li><a href="{% url 'boards-api:docs_topics' %}#request-all-topics" class="light-up">Request all topics</a></li>
+							<li><a href="{% url 'boards-api:docs_topics' %}#request-specific-topic" class="light-up">Request specific topic</a></li>
+							<li><a href="{% url 'boards-api:docs_topics' %}#request-topic-posts" class="light-up">Request topic posts</a></li>
+							<li><a href="{% url 'boards-api:docs_topics' %}#make-reply" class="light-up">Make a reply for topic</a></li>
+						</ul>
+					</small>
+
+				</li>
+				<li class="nav-item">
+					<hr>
+					<a class="nav-link btn btn-light" href="{% url 'boards-api:docs_posts' %}" data-target="posts" style="color: #008FFF;">Posts</a>
+
+					<small class="text-muted">
+						<ul>
+							<li><a href="{% url 'boards-api:docs_posts' %}#request-all-posts" class="light-up">Request all posts</a></li>
+							<li><a href="{% url 'boards-api:docs_posts' %}#request-specific-post" class="light-up">Request specific post</a></li>
+							<li><a href="{% url 'boards-api:docs_posts' %}#edit-post" class="light-up">Edit post</a></li>
+						</ul>
+					</small>
+
+				</li>
+			</ul>
+		</nav>
+	</div>
+</div>

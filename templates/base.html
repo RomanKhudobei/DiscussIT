@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{% block title %}DiscussIT{% endblock %}</title>
+	{% block styles %}
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+		<link href="https://fonts.googleapis.com/css?family=Bree+Serif" rel="stylesheet">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+	{% endblock %}
+</head>
+<body>
+{% block body %}
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark p-0">
+		<div class="container">
+			<div class="px-2">
+				<a class="navbar-brand bree-serif" href="{% url 'home' %}">DiscussIT</a>
+			</div>
+			<div class="p-2">
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+			</div>
+			<div class="collapse navbar-collapse" id="main-menu">
+				<!-- left buttons
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item p-2 borderlist">
+						<a href="#" class="nav-link">Test2</a>
+					</li>
+					<li class="nav-item p-2 borderlist">
+						<a href="#" class="nav-link">Test3</a>
+					</li>
+				</ul>
+				-->
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item"><a href="{% url 'search' %}" class="nav-link link-unstyled p-3 px-4"><i class="fa fa-search" aria-hidden="true"></i></a></li>
+					<li class="nav-item"><a href="{% url 'boards-api:docs' %}" class="nav-link link-unstyled p-3 px-4">API</a></li>
+					{% if request.user.is_authenticated %}
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle p-3" id="user-menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">{{ request.user.username }}</a>
+							<div class="dropdown-menu dropdown-menu-right" aria-labelledby="user-menu">
+								<a class="dropdown-item" href="{% url 'user_info' request.user.id %}">My account</a>
+								<a class="dropdown-item" href="{% url 'password_change' %}">Change password</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="{% url 'logout' %}">Log out</a>
+								{% if request.user.is_superuser or request.user.is_staff %}
+									<div class="dropdown-divider"></div>
+									<a class="dropdown-item" href="{% url 'admin:index' %}">Admin</a>
+								{% endif %}
+							</div>
+						</li>
+					{% else %}
+						<li class="nav-item">
+							<a href="{% url 'login' %}?next={{ request.path }}" class="nav-link link-unstyled p-3">Log In</a>
+						</li>
+						<li class="nav-item">
+							<a href="{% url 'signup' %}" class="nav-link link-unstyled p-3">Sign Up</a>
+						</li>
+					{% endif %}
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div class="container-fluid" id="main-wrap">
+		{% block whiteboard %}
+		<div class="row">
+			<div class="col-lg-2">
+			</div>
+			<div class="col-lg-8">
+				<div class="card rounded-0 r-bottom heading shadow" id="content">
+					<div class="card-body">
+						{% if messages %}
+
+							{% for message in messages %}
+								<div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %} alert-dismissible">
+									<button type="button" class="close" data-dismiss="alert">&times;</button>
+									{{ message|safe }}
+								</div>
+							{% endfor %}
+
+						{% endif %}
+						{% block content %}
+						{% endblock %}
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-2">
+			</div>
+		</div>
+		{% endblock %}
+
+	</div>
+{% endblock %}
+
+{% block scripts %}
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+{% endblock %}
+
+</body>
+</html>

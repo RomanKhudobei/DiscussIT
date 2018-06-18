@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+
+{% load static %}
+
+{% block styles %}
+	{{ block.super }}
+	<link rel="stylesheet" href="{% static 'css/boards/boards.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="col-12">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb bg-light mb-0">
+				<li class="breadcrumb-item active">Home</li>
+			</ol>
+		</nav>
+	</div>
+</div>
+	<h1 class="display-4 bree-serif font-weight-bold mb-3">Boards</h1>
+	{% for board in boards %}
+		<a href="{% url 'board_topics' board.pk %}" class="link-unstyled">
+			{# two if statements in case there's only one board or topic, so we require both r-top and r-bottom classes #}
+			<div class="card btn btn-light text-left rounded-0{% if forloop.first %} r-top{% endif %}{% if forloop.last %} r-bottom{% endif %}">	
+				<div class="card-body">
+					<div class="row fluid">
+						<div class="col-12"><h5>{{ board.name }}</h5></div>
+					</div>
+					<div class="row float-sm-right">
+						<div class="col">
+							<small>Topics: <span class="text-{% if board.topics.count != 0 %}info{% else %}muted{% endif %}">{{ board.topics.count }}</span></small>
+						</div>
+						<div class="col">
+							<small>Posts: <span class="text-{% if board.get_posts_count != 0 %}info{% else %}muted{% endif %}">{{ board.get_posts_count }}</span></small>
+						</div>
+						<div class="col">
+							{% with post=board.get_last_post %}
+								{% if post %}
+									<small>Last Post: <span class="text-info">{{ post.created_at|date:"d.m.Y, H:i" }}</span> by <span class="text-info">{{ post.created_by }}</span></small>
+								{% else %}
+									<small>Last Post: <span class="text-secondary">No posts yet</span></small>
+								{% endif %}
+							{% endwith %}
+						</div>
+					</div>
+					<div class="row fluid mt-1">
+						<div class="col-12 description"><small class="text-muted">{{ board.description }}</small></div>
+					</div>
+				</div>
+			</div>
+		</a>
+	{% endfor %}
+
+{% endblock %}

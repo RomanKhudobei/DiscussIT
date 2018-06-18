@@ -1,0 +1,24 @@
+{% extends 'accounts/base_accounts.html' %}
+
+
+{% block title %}
+	Sign Up - {{ block.super }}
+{% endblock %}
+
+{% block content %}
+	<div class="card">
+		<div class="card-body">
+			<h1 class="text-center bree-serif">Sign Up</h1>
+			<form action="{% url 'signup' %}" method="POST" novalidate>
+				{% csrf_token %}
+				{% include 'includes/form.html' %}
+				<div class="text-center">
+					<button type="submit" class="btn btn-primary bree-serif">Sign Up</button>
+				</div>
+			</form>
+		</div>
+		<div class="card-footer text-muted text-center">
+			Already have an account? <a href="{% url 'login' %}">Log In</a>
+		</div>
+	</div>
+{% endblock %}

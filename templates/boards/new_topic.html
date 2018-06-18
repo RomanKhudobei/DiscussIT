@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+	New Topic - {{ block.super }}
+{% endblock %}
+
+{% block styles %}
+	{{ block.super }}
+	<link rel="stylesheet" href="{% static 'css/boards/boards.css' %}">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+{% endblock %}
+
+{% block content %}
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb bg-light">
+			<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+			<li class="breadcrumb-item"><a href="{% url 'board_topics' board.pk %}">{{ board.name }}</a></li>
+			<li class="breadcrumb-item active" aria-current="page">New</li>
+		</ol>
+	</nav>
+	<h1 class="display-4 bree-serif font-weight-bold">New Topic</h1>
+	<form action="{% url 'new_topic' board.pk %}" method="POST" novalidate>
+		{% csrf_token %}
+		{% include 'includes/form.html' %}
+		<div class="text-center">
+			<button type="submit" class="btn btn-success bree-serif px-4">Post</button>
+		</div>
+	</form>
+{% endblock %}
+
+{% block scripts %}
+	{{ block.super }}
+	<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+	<script>
+		var simplemde = new SimpleMDE();
+	</script>
+{% endblock %}

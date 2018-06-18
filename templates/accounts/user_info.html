@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+
+{% load static tz gravatar %}
+
+{% block title %}
+
+	{% if owner %}
+		My Account - {{ block.super }}
+	{% else %}
+		User Information - {{ block.super }}
+	{% endif %}
+
+{% endblock %}
+
+{% block styles %}
+	{{ block.super }}
+	<link rel="stylesheet" href="{% static 'css/boards/boards.css' %}">
+{% endblock %}
+
+{% block content %}
+
+	{% if owner %}
+		<div class="row">
+			<div class="col-12">
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb bg-light mb-0">
+						<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+						<li class="breadcrumb-item active" aria-current="page">My Account</li>
+					</ol>
+				</nav>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-12">
+				<h1 class="display-4 bree-serif font-weight-bold float-left">My Account</h1>
+			</div>
+		</div>
+	{% else %}
+		<div class="row">
+			<div class="col-12">
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb bg-light mb-0">
+						<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+						<li class="breadcrumb-item active" aria-current="page">User Information</li>
+					</ol>
+				</nav>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-12">
+				<h1 class="display-4 bree-serif font-weight-bold float-left">User Information</h1>
+			</div>
+		</div>
+	{% endif %}
+
+	<div class="row my-4 mb-5">
+		<div class="col-sm-12">
+
+			<div class="card border border-secondary">
+				<div class="card-body">
+					<div class="row">
+						<div class="col-sm-3">
+
+							<div class="row">
+								<div class="col-12 text-center" {% if owner %} data-toggle="tooltip" data-html="true" data-delay='{"hide": 2000}' title="Sign up in <a href='https://gravatar.com' class='text-muted' target='_blank'>gravatar.com</a> to change the avatar. It takes less than minute to sign up with google account. It's a nice service. You'll love it." data-placement="left"{% endif %}>
+									<img src="{{ user|gravatar }}" class="w-100 rounded" id="user-img">
+								</div>
+							</div>
+
+						</div>
+						<div class="col-sm-9 pl-2">
+
+							<div class="row mb-1">
+								<div class="col-12">
+									<h4 class="text-muted font-weight-bold my-3" id="username">{{ user.username }}</h4>
+									<span class="text-secondary">Email:</span> <span class="text-info">{{ user.email }}</span><br>
+									<span class="text-secondary">Posts:</span> <span class="text-info">{{ user.posts.count }}</span><br>
+									{% if owner %}
+										<div class="btn-group float-sm-right mt-4">
+											<a role="button" class="btn btn-outline-secondary bree-serif" href="{% url 'edit_account' user.id %}">Edit</a>
+											<a role="button" class="btn btn-outline-secondary bree-serif" href="{% url 'password_change' %}">Change Password</a>
+										</div>
+									{% endif %}
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<hr class="hr-gradient">
+
+	<div class="row mt-4">
+		<div class="col-sm-12" id="posts-list">
+
+			<div class="mb-2 ml-2">
+				<small class="text-muted">Last posts:</small>
+			</div>
+
+			{% for post in last_posts %}
+
+				{% include 'includes/post.html' with is_button=True is_header=True %}
+
+			{% empty %}
+				<div class="text-center">
+					<small class="text-muted">{% if owner %}You{% else %}{{ user.username }}{% endif %} didn't make any posts yet</small>
+				</div>
+			{% endfor %}
+
+			{% if user.posts.count > 5 %}
+				<div class="text-center">
+					<small><a href="{% url 'user_posts' user.id %}">View all posts</a></small>
+				</div>
+			{% endif %}
+
+		</div>
+	</div>
+
+{% endblock %}
+
+{% block scripts %}
+	{{ block.super }}
+	<script src="{% static 'js/accounts/my_account.js' %}"></script>
+	<script src="{% static 'js/boards/posts.js' %}"></script>
+	<script>
+		$(document).ready(function(){
+			$('[data-toggle="tooltip"]').tooltip(); 
+		});
+	</script>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+	Reply - {{ block.super }}
+{% endblock %}
+
+{% block styles %}
+	{{ block.super }}
+	<link rel="stylesheet" href="{% static 'css/boards/boards.css' %}">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+{% endblock %}
+
+{% block content %}
+
+	<div class="row mb-2">
+		<div class="col-12">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb bg-light mb-0">
+					<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+					<li class="breadcrumb-item"><a href="{% url 'board_topics' post.topic.board.pk %}">{{ post.topic.board.name }}</a></li>
+					<li class="breadcrumb-item"><a href="{% url 'topic_posts' post.topic.board.pk post.topic.pk %}">Topic</a></li>
+					<li class="breadcrumb-item active" aria-current="page">Edit</li>
+				</ol>
+			</nav>
+		</div>
+	</div>
+
+	<h1 class="display-4 bree-serif font-weight-bold mb-4">Edit Post</h1>
+
+	<form method="POST" novalidate>
+		{% csrf_token %}
+		{% include 'includes/form.html' %}
+		<button type="submit" class="btn btn-success bree-serif">Save Changes</button>
+		<a href="{% if request.GET.next %}{{ request.GET.next }}{% else %}{% url 'home' %}{% endif %}" class="btn btn-outline-secondary bree-serif" role="button">Cancel</a>
+	</form>
+
+	<hr class="hr-gradient my-4">
+
+	<small class="text-muted mb-2">Post to change</small>
+
+	{% include 'includes/post.html' with post=post is_button=False %}
+
+{% endblock %}
+
+{% block scripts %}
+	{{ block.super }}
+	<script src="{% static 'js/boards/posts.js' %}"></script>
+	<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+	<script>
+		var simplemde = new SimpleMDE({
+			autofocus: true,
+			indentWithTabs: false
+		});
+		
+	</script>
+{% endblock %}

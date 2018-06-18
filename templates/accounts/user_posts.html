@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+
+{% load static %}
+
+{% block title %}
+	My Posts - {{ block.super }}
+{% endblock %}
+
+{% block styles %}
+	{{ block.super }}
+	<link rel="stylesheet" href="{% static 'css/boards/boards.css' %}">
+{% endblock %}
+
+{% block content %}
+
+	{% if owner %}
+		<div class="row">
+			<div class="col-12">
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb bg-light mb-0">
+						<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+						<li class="breadcrumb-item"><a href="{% url 'user_info' user_id %}">My Account</a></li>
+						<li class="breadcrumb-item active" aria-current="page">Posts</li>
+					</ol>
+				</nav>
+			</div>
+		</div>
+	{% else %}
+		<div class="row">
+			<div class="col-12">
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb bg-light mb-0">
+						<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+						<li class="breadcrumb-item"><a href="{% url 'user_info' user_id %}">User Information</a></li>
+						<li class="breadcrumb-item active" aria-current="page">Posts</li>
+					</ol>
+				</nav>
+			</div>
+		</div>
+	{% endif %}
+
+<div class="row">
+	<div class="col-sm-12">
+		<h1 class="display-4 bree-serif font-weight-bold">Posts</h1>
+	</div>
+</div>
+
+	<div class="mt-3" id="posts-list">
+	{% for post in posts %}
+
+		{% include 'includes/post.html' with is_button=True is_header=True next=request.path %}
+
+	{% empty %}
+		<div class="text-center">
+			<small class="text-muted">{% if owner %}You{% else %}{{ user.username }}{% endif %} didn't make any posts yet</small>
+		</div>
+	{% endfor %}
+	</div>
+
+	<div class="row mb-2">
+		<div class="col-sm-12">
+
+			{% include 'includes/pagination.html' %}
+
+		</div>
+	</div>
+
+{% endblock %}
+
+{% block scripts %}
+	{{ block.super }}
+	<script src="{% static 'js/boards/posts.js' %}"></script>
+{% endblock %}

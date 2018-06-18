@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+
+{% load static %}
+
+{% block styles %}
+	{{ block.super }}
+	<link rel="stylesheet" href="{% static 'css/accounts/signup.css' %}">
+{% endblock %}
+
+{% block body %}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-2">
+			</div>
+
+			<div class="col-sm-8">
+				<div class="text-center">
+					<h1 class="display-3 my-4"><a href="{% url 'home' %}" id="logo">DiscussIT</a></h1>
+				</div>
+				{% block content %}
+				{% endblock %}
+			</div>
+
+			<div class="col-sm-2">
+			</div>
+		</div>
+	</div>
+{% endblock %}

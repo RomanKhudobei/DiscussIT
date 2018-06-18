@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+
+{% load static %}
+
+
+{% block title %}
+	API Documentation - {{ block.super }}
+{% endblock %}
+
+{% block styles %}
+	{{ block.super }}
+	<link rel="stylesheet" href="{% static 'css/boards/boards.css' %}">
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+{% endblock %}
+
+{% block whiteboard %}
+
+<div class="row">
+
+	<div class="col-lg-1">
+	</div>
+
+	<div class="col-lg-10">
+
+		<div class="card rounded-0 r-bottom mb-4 heading shadow">
+			<div class="card-body">
+				{% if messages %}
+
+					{% for message in messages %}
+						<div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %} alert-dismissible">
+							<button type="button" class="close" data-dismiss="alert">&times;</button>
+							{{ message|safe }}
+						</div>
+					{% endfor %}
+
+				{% endif %}
+
+				{% block content %}
+					<div class="row">
+						<div class="col-12">
+							<nav aria-label="breadcrumb">
+								<ol class="breadcrumb bg-light mb-0">
+									<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+									<li class="breadcrumb-item active" aria-current="page">API Documentation</li>
+								</ol>
+							</nav>
+						</div>
+					</div>
+			</div>
+		</div>
+
+		<div class="row" id="content">
+
+			<div class="col-lg-3">
+				{% include 'includes/api_sidenav.html' %}
+			</div>
+
+			<div class="col-lg-9">
+				<div class="card shadow">
+					<div class="card-body" id="docs">
+
+						<div class="transparent" id="boards">
+							<h3 class="display-4 bree-serif font-weight-bold">Boards</h3>
+							<hr>
+
+							<div class="mb-4">
+								<h3 id="request-all-boards"><a href="#request-all-boards" class="title">Request all boards</a></h3>
+								<p>
+									<code><a href="{% url 'boards-api:boards_list' %}" target="_blank">/api/boards/</a></code><br>
+									You'll get a list of serialized board objects with following attributes:
+								</p>
+
+<pre><code class="json">{
+    "id": 1,
+    "name": "Django",
+    "description": "Django discussion board",
+    "posts_count": 114,
+    "topics_count": 106,
+    "last_post_datetime": "06.05.2018, 11:10",
+    "topics_url": "http://127.0.0.1:8000/api/boards/1/topics/"
+}
+</code></pre>
+							</div>
+
+							<hr>
+
+							<div class="mb-4">
+								<h3 id="request-specific-board"><a href="#request-specific-board" class="title">Request specific board by given <code><mark>id</mark></code></a></h3>
+								<p>
+									<code><a href="{% url 'boards-api:board_detail' 1 %}" target="_blank">/api/boards/<mark>id</mark>/</a></code><br>
+									You'll get only one board object instead list. Structure the same.
+								</p>
+							</div>
+
+							<hr>
+
+							<div class="mb-4" id="request-board-topics">
+								<h3 id="request-board-topics"><a href="#request-board-topics" class="title">Request board topics <small class="text-muted">(topics that belong to the specific board)</small>:</a></h3>
+								<p>
+									<code><a href="{% url 'boards-api:board_topics' 1 %}" target="_blank">/api/boards/<mark>id</mark>/topics/</a></code><br>
+									You'll get <a href="{% url 'boards-api:docs' %}#pagination">paginated</a> data with following structure:
+								</p>
+
+<pre><code class="json">{
+    "count": 106,
+    "next": "http://127.0.0.1:8000/api/boards/1/topics/?page=2",
+    "previous": null,
+    "results": [
+        {
+            "id": 106,
+            "name": "Testing messages framework",
+            "starter": {
+                "id": 2,
+                "username": "Test",
+                "detail_url": "http://127.0.0.1:8000/api/users/2/"
+            },
+            "views": 3,
+            "last_updated": "06.05.2018, 11:10",
+            "posts_url": "http://127.0.0.1:8000/api/topics/106/posts/",
+            "reply_topic": "http://127.0.0.1:8000/api/topics/106/reply/"
+        },
+        ...
+    ]
+}
+</code></pre>
+							</div>
+
+						</div>
+
+
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
+				{% endblock %}
+
+	<div class="col-lg-1">
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+	{{ block.super }}
+	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+	<script src="{% static 'js/boards/api_docs.js' %}"></script>
+{% endblock %}

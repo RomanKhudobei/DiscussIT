@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+
+{% load static %}
+{% load tz %}
+{% load humanize %}
+
+{% block title %}
+	{{ board.name }} - {{ block.super }}
+{% endblock %}
+
+{% block styles %}
+	{{ block.super }}
+	<link rel="stylesheet" href="{% static 'css/boards/boards.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+	<div class="col-12">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb bg-light mb-0">
+				<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+				<li class="breadcrumb-item active" aria-current="page">{{ board.name }}</li>
+			</ol>
+		</nav>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-12">
+		<h1 class="display-4 bree-serif font-weight-bold float-left">Topics</h1>
+		<a role="button" class="btn btn-primary bree-serif fixed-button float-right" href="{% url 'new_topic' board.pk %}">New Topic</a>
+	</div>
+</div>
+
+<form method="GET" class="m-4">
+	<div class="input-group">
+		<input class="form-control" type="text" name="q" placeholder="Search..." {% if request.GET.q %}value="{{ request.GET.q }}"{% endif %}>
+		<div class="input-group-append">
+			<button type="submit" class="btn btn-outline-primary bree-serif px-4"><i class="fa fa-search" aria-hidden="true"></i></button>
+		</div>
+	</div>
+	<div>
+		<small class="text-muted"><span class="text-{% if topics.count != 0 %}info{% else %}muted{% endif %}">{{ paginator.count }}</span> {% if request.GET.q %}results{% else %}topics{% endif %}</small>
+	</div>
+</form>
+
+<hr>
+
+<div class="row my-4" id="cards-list">
+	<div class="col-sm-12">
+	{% for topic in topics %}
+		<div class="row">
+			<div class="col-sm-12">
+				<a href="{% url 'topic_posts' board.pk topic.pk %}" class="link-unstyled">
+					<div class="card btn btn-light text-left rounded-0{% if forloop.first %} r-top{% endif %}{% if forloop.last %} r-bottom{% endif %}">
+						<div class="card-body">
+							<div class="row fluid">
+								<div class="col-12">
+									<h5>{{ topic.name }}</h5>
+								</div>
+							</div>
+							<div class="row float-sm-right">
+								<div class="col">
+									<small>Replies: <span class="text-{% if topic.replies != 0 %}info{% else %}muted{% endif %}">{{ topic.replies }}</span></small>
+								</div>
+								<div class="col">
+									<small>Views: <span class="text-{% if topic.views != 0 %}info{% else %}muted{% endif %}">{{ topic.views }}</span></small>
+								</div>
+								<div class="col">	{#|date:"d.m.Y, H:i"#}
+									<small>Last update: <span class="text-info">{{ topic.last_updated|timezone:'Europe/Kiev'|naturaltime }}</span></small>
+								</div>
+							</div>
+							<div class="row float-left">
+								<div class="col-12">
+									<small class="text-secondary">Started by {{ topic.starter.username }}</small>
+								</div>
+							</div>
+						</div>
+					</div>
+				</a>
+			</div>
+		</div>
+	{% empty %}
+		<div class="text-center">
+			<small class="text-muted">{% if request.GET.q %}Oops... there's no results matching your query<br>Try to <a href="{% url 'new_topic' board.pk %}" class="text-muted font-weight-bold">create</a> one that interested you{% else %}Oops... no topics yet{% endif %}</small>
+		</div>
+	{% endfor %}
+	</div>
+</div>
+
+<div class="row mb-2">
+	<div class="col-sm-12">
+
+		{% include 'includes/pagination.html' %}
+
+	</div>
+</div>
+
+{% endblock %}

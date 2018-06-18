@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+	Reply - {{ block.super }}
+{% endblock %}
+
+{% block styles %}
+	{{ block.super }}
+	<link rel="stylesheet" href="{% static 'css/boards/boards.css' %}">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+{% endblock %}
+
+{% block content %}
+
+	<div class="row mb-2">
+		<div class="col-12">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb bg-light mb-0">
+					<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+					<li class="breadcrumb-item"><a href="{% url 'board_topics' topic.board.pk %}">{{ topic.board.name }}</a></li>
+					<li class="breadcrumb-item"><a href="{% url 'topic_posts' topic.board.pk topic.pk %}">Topic</a></li>
+					<li class="breadcrumb-item active" aria-current="page">Reply</li>
+				</ol>
+			</nav>
+		</div>
+	</div>
+
+	<h1 class="display-4 bree-serif font-weight-bold mb-4">New Post</h1>
+
+	<div class="row mb-3">
+		<div class="col-sm-12">
+			<h6><small class="text-muted">Reply for</small> <a href="{% url 'topic_posts' topic.board.pk topic.pk %}" class="text-dark bree-serif font-weight-bold">{{ topic.name }}</a></h6>
+		</div>
+	</div>
+
+	<form method="POST" novalidate>
+		{% csrf_token %}
+		{% include 'includes/form.html' %}
+		<button type="submit" class="btn btn-success bree-serif px-4">Reply</button>
+	</form>
+
+	<hr class="hr-gradient my-4">
+
+	<small class="text-muted">Posts from topic</small>
+
+	<div class="mt-2" id="posts-list">
+		{% for post in topic.get_last_ten_posts %}
+			{% include 'includes/post.html' with is_button=False is_main=False %}
+		{% endfor %}
+	</div>
+
+{% endblock %}
+
+{% block scripts %}
+	{{ block.super }}
+	<script src="{% static 'js/boards/posts.js' %}"></script>
+	<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+	<script>
+		var simplemde = new SimpleMDE();
+	</script>
+{% endblock %}

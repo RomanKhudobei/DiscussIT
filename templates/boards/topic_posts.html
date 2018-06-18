@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+
+{% load static %}
+
+{% block title %}
+	Topic - {{ block.super }}
+{% endblock %}
+
+{% block styles %}
+	{{ block.super }}
+	<link rel="stylesheet" href="{% static 'css/boards/boards.css' %}">
+{% endblock %}
+
+{% block content %}
+
+	<div class="row">
+		<div class="col-12">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb bg-light mb-0">
+					<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+					<li class="breadcrumb-item"><a href="{% url 'board_topics' topic.board.pk %}">{{ topic.board.name }}</a></li>
+					<li class="breadcrumb-item active" aria-current="page">Topic</li>
+				</ol>
+			</nav>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-12">
+			<h1 class="bree-serif font-weight-bold float-left">{{ topic.name }}</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-12">
+			<a role="button" class="btn btn-primary bree-serif float-right px-3" href="{% url 'reply_topic' topic.board.pk topic.pk %}">Reply</a>
+		</div>
+	</div>
+
+	<div class="mt-3" id="main-post">
+		{% include 'includes/post.html' with post=main_post is_button=True is_main=True %}
+		<hr class="hr-gradient my-4">
+	</div>
+
+	<div class="mt-3" id="posts-list">
+	{% for post in posts %}
+
+		{% include 'includes/post.html' with is_button=True %}
+
+	{% empty %}
+		<div class="text-center">
+			<small class="text-muted">Oops... there's no posts yet<br>Be the <a href="{% url 'reply_topic' topic.board.pk topic.pk %}" class="text-secondary bree-serif">FIRST!</a></small>
+		</div>
+	{% endfor %}
+	</div>
+
+	<div class="row mb-2">
+		<div class="col-sm-12">
+
+			{% include 'includes/pagination.html' %}
+
+		</div>
+	</div>
+
+{% endblock %}
+
+{% block scripts %}
+	{{ block.super }}
+	<script src="{% static 'js/boards/posts.js' %}"></script>
+{% endblock %}

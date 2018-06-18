@@ -1,0 +1,119 @@
+body {
+	background: #74ebd5;
+	background: -webkit-linear-gradient(to right, #ACB6E5, #74ebd5);
+	background: linear-gradient(to right, #ACB6E5, #74ebd5);
+}
+
+.navbar {
+	-webkit-box-shadow: 0px 5px 40px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 5px 40px 0px rgba(0,0,0,0.75);
+	box-shadow: 0px 0px 50px 0px rgba(0,0,0,0.75);
+}
+
+.navbar-brand {
+	font-size: 30px;
+}
+
+.navbar-nav > li:hover {
+	z-index: 1000;
+	background: #191919;
+}
+
+.dropdown-menu > a:hover {
+	z-index: 999;
+	background-color: #DFDFDF;
+}
+
+.navbar-nav {
+	z-index: 1000;
+}
+
+.borderlist {
+    list-style-position: inside;
+    border-left: 1px solid grey;
+    border-right: 1px solid grey;
+    margin-left: -1px;
+}
+
+.bree-serif {
+	font-family: 'Bree Serif', serif;
+}
+
+.link-unstyled {
+	text-decoration: none !important;
+}
+
+.shadow {
+	-webkit-box-shadow: 0px 5px 50px -5px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 5px 50px -5px rgba(0,0,0,0.75);
+	box-shadow: 0px 5px 50px -5px rgba(0,0,0,0.75);
+}
+
+#content {
+	margin-bottom: 10%;
+}
+
+.fixed-button {
+	position: absolute;
+	right: 16px;
+	bottom: 0;
+}
+
+.r-top {
+	z-index: 999;
+	border-top-left-radius: .25rem !important;
+	border-top-right-radius: .25rem !important;
+}
+
+.r-bottom {
+	z-index: 999;
+	border-bottom-left-radius: .25rem !important;
+	border-bottom-right-radius: .25rem !important;
+}
+
+.card {
+	margin-bottom: -1px;
+}
+
+.fluid {
+	white-space: normal;
+}
+
+.description {
+	line-height: 15px;
+}
+
+.hr-gradient {
+	border : 0;
+	height: 1px; 
+	background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0));
+}
+
+#posts-list > .sсroll > .card, #posts-list > .card {
+	margin-bottom: 15px;
+}
+
+.pre-scrollable {
+	max-height: 500px;
+}
+
+.sсroll {
+	min-height: 200px; /* in order to scroll even if there's only one post. Works when .scroll min-height greater than .pre-scroll min-height */
+}
+
+#side-nav small a {
+	color: #6C757D;
+}
+
+.affix {
+    position: fixed;
+    top: 20px;
+    left: 127px;
+    width: 250px;
+    z-index: 9999;
+    display: none;
+}
+
+.title {
+	color: black;
+}

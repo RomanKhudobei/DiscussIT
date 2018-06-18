@@ -1,0 +1,31 @@
+body {
+	background: #74ebd5;  /* fallback for old browsers */
+	background: -webkit-linear-gradient(to right, #ACB6E5, #74ebd5);  /* Chrome 10-25, Safari 5.1-6 */
+	background: linear-gradient(to right, #ACB6E5, #74ebd5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+#logo {
+	text-decoration: none;
+	font-family: 'Bree Serif', serif;
+	color: white;
+}
+
+.bree-serif {
+	font-family: 'Bree Serif', serif;
+}
+
+#logo:hover {
+	cursor: pointer;
+	text-shadow: 0px 0px 5px rgba(0, 0, 0, 1);
+}
+
+.card {
+	-webkit-box-shadow: 0px 5px 50px -5px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 5px 50px -5px rgba(0,0,0,0.75);
+	box-shadow: 0px 5px 50px -5px rgba(0,0,0,0.75);
+	margin-bottom: 15%;
+}
+
+#after-card {
+	margin-top: -14%;
+}

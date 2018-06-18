@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+
+{% load static %}
+
+
+{% block title %}
+	API Documentation - {{ block.super }}
+{% endblock %}
+
+{% block styles %}
+	{{ block.super }}
+	<link rel="stylesheet" href="{% static 'css/boards/boards.css' %}">
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+{% endblock %}
+
+{% block whiteboard %}
+
+<div class="row">
+
+	<div class="col-lg-1">
+	</div>
+
+	<div class="col-lg-10">
+
+		<div class="card rounded-0 r-bottom mb-4 heading shadow">
+			<div class="card-body">
+				{% if messages %}
+
+					{% for message in messages %}
+						<div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %} alert-dismissible">
+							<button type="button" class="close" data-dismiss="alert">&times;</button>
+							{{ message|safe }}
+						</div>
+					{% endfor %}
+
+				{% endif %}
+
+				{% block content %}
+					<div class="row">
+						<div class="col-12">
+							<nav aria-label="breadcrumb">
+								<ol class="breadcrumb bg-light mb-0">
+									<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+									<li class="breadcrumb-item active" aria-current="page">API Documentation</li>
+								</ol>
+							</nav>
+						</div>
+					</div>
+			</div>
+		</div>
+
+		<div class="row" id="content">
+
+			<div class="col-lg-3">
+				{% include 'includes/api_sidenav.html' %}
+			</div>
+
+			<div class="col-lg-9">
+				<div class="card shadow">
+					<div class="card-body" id="docs">
+
+						<div class="transparent" id="general">
+							<h3 class="display-4 bree-serif font-weight-bold">General</h3>
+							<hr>
+							<p>
+								By default you'll see user interface in API. To receive json format add <code>format=json</code> parameter. Json format supported only.
+							</p>
+
+							<div class="mb-4">
+								<h3 id="pagination"><a href="#pagination" class="title">Pagination</a></h3>
+								<p>
+									If you see structure as below, you deal with pagination.
+								</p>
+<pre><code class="json">{
+    "count": 106,
+    "next": "http://127.0.0.1:8000/api/boards/1/topics/?page=2",
+    "previous": null,
+    "results": [
+        ...
+    ]
+}
+</code></pre>
+								<p>
+									Data stored in attribute <code>"results"</code>. 
+									You can provide two <code>GET</code> parameters to setup pagination:<br>
+									<ul>
+										<li> <code>page_size</code> </li>
+										<li> <code>page</code> </li>
+									</ul>
+									By default <code>page_size</code> equals to 20 <small class="text-muted">(in list views - 100)</small>. Max <code>page_size</code> restricted to 1000.
+									You can change the page number through setting needed number to <code>page</code> parameter.
+								</p>
+
+							</div>
+
+							<hr>
+
+							<div class="mb-4">
+								<h3 id="search-ordering"><a href="#search-ordering" class="title"> Search & Ordering</a></h3>
+								<p>
+									You can search by providing <code>search</code> parameter in url.<br>
+									For example: <code><a href="{% url 'boards-api:topics_list' %}?search=test" target="_blank">/api/topics/?search=test</a></code><br>
+									Where <mark>test</mark> is your query.
+								</p>
+								<p>
+									You can setup ordering by providing <code>ordering</code> parameter in url.<br>
+									For example: <code><a href="{% url 'boards-api:topics_list' %}?ordering=name" target="_blank">/api/topics/?ordering=name</a></code><br>
+									Where <mark>name</mark> is one of the fields of returned object. Type the minus <small class="text-muted">(e.g. -name or name)</small> to specify descending/ascending accordingly.
+								</p>
+								<p>
+									<strong>NOTE:</strong> <span class="text-muted">Except url/count/renamed fields.</span>
+								</p>
+							</div>
+
+						</div>
+
+						
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+
+				{% endblock %}
+	</div>
+
+	<div class="col-lg-1">
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+	{{ block.super }}
+	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+	<script src="{% static 'js/boards/api_docs.js' %}"></script>
+{% endblock %}

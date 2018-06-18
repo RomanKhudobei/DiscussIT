@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+
+{% load static tz humanize %}
+
+{% block styles %}
+	{{ block.super }}
+	<link rel="stylesheet" href="{% static 'css/boards/boards.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="col-12">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb bg-light mb-0">
+				<li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+				<li class="breadcrumb-item active">Search</li>
+			</ol>
+		</nav>
+	</div>
+</div>
+	<h1 class="display-4 bree-serif font-weight-bold mb-4">Search</h1>
+	<form method="GET" class="mb-4">
+		<div class="input-group">
+			<input class="form-control" type="text" name="q" placeholder="Search..." {% if request.GET.q %}value="{{ request.GET.q }}"{% endif %}>
+			<div class="input-group-append">
+				<button type="submit" class="btn btn-outline-primary bree-serif px-4"><i class="fa fa-search" aria-hidden="true"></i></button>
+			</div>
+		</div>
+	</form>
+
+	<div id="search-result">
+		{% for topic in topics %}
+			<div class="row">
+				<div class="col-sm-12">
+					<a href="{% url 'topic_posts' topic.board.pk topic.pk %}" class="link-unstyled">
+						<div class="card btn btn-light text-left rounded-0{% if forloop.first %} r-top{% endif %}{% if forloop.last %} r-bottom{% endif %}">
+							<div class="card-body">
+								<div class="row fluid">
+									<div class="col-12">
+										<h5>{{ topic.name }}</h5>
+									</div>
+								</div>
+								<div class="row float-sm-right">
+									<div class="col">
+										<small>Replies: <span class="text-{% if topic.replies != 0 %}info{% else %}muted{% endif %}">{{ topic.replies }}</span></small>
+									</div>
+									<div class="col">
+										<small>Views: <span class="text-{% if topic.views != 0 %}info{% else %}muted{% endif %}">{{ topic.views }}</span></small>
+									</div>
+									<div class="col">	{#|date:"d.m.Y, H:i"#}	{# topic.last_updated|timezone:user_tz|naturaltime #}
+										<small>Last update: <span class="text-info">{{ topic.last_updated|naturaltime }}</span></small>
+									</div>
+								</div>
+								<div class="row float-left">
+									<div class="col-12">
+										<small class="text-secondary">Started by {{ topic.starter.username }}</small>
+									</div>
+								</div>
+							</div>
+						</div>
+					</a>
+				</div>
+			</div>
+		{% empty %}
+			{% if request.GET.q %}
+			<div class="text-center">
+				<small class="text-muted">Oops... there's no topics matching your query...<br>Try to create new that interested you.</small>
+			</div>
+			{% endif %}
+		{% endfor %}
+	</div>
+	<div class="row mb-2 mt-4">
+		<div class="col-sm-12">
+			{% include 'includes/pagination.html' %}
+		</div>
+	</div>
+{% endblock %}
